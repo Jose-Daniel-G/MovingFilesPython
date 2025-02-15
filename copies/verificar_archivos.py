@@ -1,14 +1,15 @@
 import os
 import csv
 import shutil
+import pandas as pd 
 
 def limpiar_nombre(nombre):
     """Limpia el nombre eliminando espacios extra y convirtiéndolo a minúsculas."""
     return nombre.lower().strip()
 
-def verificar_archivos(ruta_carpeta, destino, cantidad_minima_pdfs=1):
+def verificar_archivos(carpeta_pdfs, destino, cantidad_minima_pdfs=1):
     try:
-        archivos = set(os.listdir(ruta_carpeta))
+        archivos = set(os.listdir(carpeta_pdfs))
     except FileNotFoundError:
         print("❌ La carpeta especificada no existe.")
         return
@@ -25,8 +26,9 @@ def verificar_archivos(ruta_carpeta, destino, cantidad_minima_pdfs=1):
         return
     
     # Usamos el primer archivo CSV encontrado
-    archivo_csv = os.path.join(ruta_carpeta, next(iter(archivos_csv)))
-    
+    archivo_csv = os.path.join(carpeta_pdfs, next(iter(archivos_csv)))
+    print(f"📄 Archivo CSV encontrado: {archivo_csv}")
+
     nombres_validos = set()
     
     with open(archivo_csv, newline='', encoding='utf-8') as f:
@@ -51,14 +53,16 @@ def verificar_archivos(ruta_carpeta, destino, cantidad_minima_pdfs=1):
 
         # Mover los archivos PDF
         for pdf in archivos_pdf:
-            ruta_origen = os.path.join(ruta_carpeta, pdf)
+            ruta_origen = os.path.join(carpeta_pdfs, pdf)
             ruta_destino = os.path.join(destino, pdf)
             shutil.move(ruta_origen, ruta_destino)
         
         print(f"📂 Todos los archivos PDF han sido movidos a '{destino}'.")
 
 # 🚀 **Ejemplo de uso**
-directorio = "."  # Reemplázalo con la carpeta donde están los archivos
+# directorio
+carpeta_pdfs = "."  # Reemplázalo con la carpeta donde están los archivos
+# archivo_csv = "actividades_transporte.csv"  # Nombre del archivo CSV
 destino = "./archivos"  # Reemplázalo con la carpeta donde quieres mover los PDFs
 
-verificar_archivos(directorio, destino, cantidad_minima_pdfs=2)
+verificar_archivos(carpeta_pdfs, destino, cantidad_minima_pdfs=2)
